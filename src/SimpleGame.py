@@ -9,10 +9,61 @@ __date__ = "12/7/18"
 """
 
 import arcade
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import pyqtSlot
 
 # Setting game screen size as constant
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 800
+
+
+class App(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'EEEEEEEEEEEHhhhhhaaaaa Welcome to Sheriff Jones Robber Roundup'
+        self.left = 10
+        self.top = 10
+        self.width = 320
+        self.height = 200
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        buttonReply = QMessageBox.question(self, 'Game Play Message',
+                                           "Do you want to play Sheriff Jones Robber Roundup?",
+                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if buttonReply == QMessageBox.Yes:
+            print('Yes clicked.')
+        else:
+            self.close()
+
+
+# Todo abstract these classes into a character class
+class Sheriff:
+    robber = None
+
+    def __init__(self, position_x, position_y):
+        self.position_x = position_x
+        self.position_y = position_y
+        self.sprite_scale = .3
+        self.robber_image = ""  # todo set image
+        self.robber_sprite = arcade.Sprite(self.robber_image, self.sprite_scale)
+
+    def draw(self):
+        self.robber_sprite.draw()
+
+    def animate(self):
+        pass
+
+    def get_scaling(self):
+        return 1
+
+    def get_robber_image(self):
+        return ""  # todo return image
 
 
 class Robber:
@@ -29,6 +80,7 @@ class Robber:
         self.robber_sprite.draw()
 
     def animate(self):
+        # todo
         pass
 
     def get_scaling(self):
@@ -47,10 +99,17 @@ class SimpleGame(arcade.Window):
         arcade.set_background_color(arcade.color.DONKEY_BROWN)
         self.robber_list = arcade.SpriteList()
         self.robber = Robber(300, 300)
+        self.sheriff = Sheriff(300, 300)
 
     def on_draw(self):
         arcade.start_render()
         self.robber.draw()
+        self.sheriff.draw()
+
+    def on_key_press(self, key, modifiers):
+        pass
+        # todo
+
 
 def main():
     game_window = SimpleGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Game")
