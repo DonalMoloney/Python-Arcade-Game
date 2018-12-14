@@ -7,6 +7,8 @@ __email__ = "Moloneyda@msoe.edu"
 __status__ = "Production"
 __date__ = "12/7/18"
 """
+import random
+import sys
 
 import arcade
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox
@@ -18,40 +20,15 @@ SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 800
 
 
-class App(QWidget):
-
-    def __init__(self):
-        super().__init__()
-        self.title = 'EEEEEEEEEEEHhhhhhaaaaa Welcome to Sheriff Jones Robber Roundup'
-        self.left = 10
-        self.top = 10
-        self.width = 320
-        self.height = 200
-        self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
-
-        buttonReply = QMessageBox.question(self, 'Game Play Message',
-                                           "Do you want to play Sheriff Jones Robber Roundup?",
-                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if buttonReply == QMessageBox.Yes:
-            print('Yes clicked.')
-        else:
-            self.close()
-
-
 # Todo abstract these classes into a character class
 class Sheriff:
-    robber = None
 
     def __init__(self, position_x, position_y):
         self.position_x = position_x
         self.position_y = position_y
         self.sprite_scale = .3
-        self.robber_image = ""  # todo set image
-        self.robber_sprite = arcade.Sprite(self.robber_image, self.sprite_scale)
+        self.sheriff_image = "sprites/sheriff.png"
+        self.sheriff_sprite = arcade.Sprite(self.sheriff_image, self.sprite_scale)
 
     def draw(self):
         self.robber_sprite.draw()
@@ -62,12 +39,11 @@ class Sheriff:
     def get_scaling(self):
         return 1
 
-    def get_robber_image(self):
-        return ""  # todo return image
+    def get_sheriff_image(self):
+        return "sprites/sheriff.png"
 
 
 class Robber:
-    robber = None
 
     def __init__(self, position_x, position_y):
         self.position_x = position_x
@@ -79,15 +55,27 @@ class Robber:
     def draw(self):
         self.robber_sprite.draw()
 
+    def get_direction(number):
+        # Todo add other directions
+        if number == 0:
+            return "down"
+        else:
+            return "up"
+
     def animate(self):
-        # todo
-        pass
+        self.move_sprite(self.get_direction(random.randint(0, 1)))
 
     def get_scaling(self):
         return 1
 
     def get_robber_image(self):
         return "sprites/robber.png"
+
+    def move_sprite(self, param):
+        if (param == "left") and (self.position_x != SCREEN_WIDTH):
+            self.position_x = self.position_x - 3
+        else:
+            self.position_x = self.position_x + 1
 
 
 class SimpleGame(arcade.Window):
@@ -104,17 +92,37 @@ class SimpleGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.robber.draw()
-        self.sheriff.draw()
+       # self.sheriff.draw()
 
     def on_key_press(self, key, modifiers):
         pass
         # todo
 
 
-def main():
-    game_window = SimpleGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Game")
-    arcade.run()
+class App(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'EEEEEEEEEEEHhhhhhaaaaa Welcome to Sheriff Jones Robber Roundup'
+        self.left = 10
+        self.top = 10
+        self.width = 320
+        self.height = 200
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+        buttonReply = QMessageBox.question(self, 'Game Play Message',
+                                           "Do you want to play Sheriff Jones Robber Roundup?",
+                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if buttonReply == QMessageBox.Yes:
+            game_window = SimpleGame(SCREEN_WIDTH, SCREEN_HEIGHT, "Simple Game")
+            arcade.run()
+        else:
+            self.close()
 
 
 if __name__ == "__main__":
-    main()
+    app = QApplication(sys.argv)
+    ex = App()
