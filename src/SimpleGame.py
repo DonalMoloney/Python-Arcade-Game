@@ -20,57 +20,62 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
 SPRITE_SCALING = 0.3
+NUMBER_ROBBERS = 3 # Todo its three for now but maybe allow user to change it once GUI is made better
 
 
-# Todo abstract these classes into a character class
+#Enums that define the two directions the robbers can go in
 class Direction(Enum):
     LEFT = 0
     RIGHT = 1
 
-
+#Class that represents a robber and his abilities
 class Robber(arcade.Sprite):
-    ROBBER_SPEED = 50
+    ROBBER_SPEED = 3
     CURRENT_DIRECTION = Direction.LEFT
 
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
-        self.change_x = self.ROBBER_SPEED
+        self.change_x = self.ROBBER_SPEED * -1
 
-    def move_left(self):
-        if (self.center_x + self.ROBBER_SPEED) >= SCREEN_WIDTH:
-            self.center_x = SCREEN_WIDTH
-            self.CURRENT_DIRECTION = Direction.RIGHT  # Switch to other direction once you have hit the boundary
-        else:
-            self.center_x = self.center_x + self.ROBBER_SPEED
-
+    # Method allowing the robber to move left
     def move_right(self):
-        if 0 >= (self.center_x - self.ROBBER_SPEED):
-            self.center_x = SCREEN_WIDTH
-            self.CURRENT_DIRECTION = Direction.LEFT  # Switch to other direction once you have hit the boundary
-        else:
-            self.center_x = self.center_x - self.ROBBER_SPEED
+        self.center_x += self.change_x
+        if (self.center_x + self.ROBBER_SPEED) >= SCREEN_WIDTH: # Switch to other direction if it hits right side boundary
+            self.change_x *= -1
+            self.CURRENT_DIRECTION = Direction.LEFT
 
-    def update(self):
-        print("UPDATE ENTERED")
+    # Method allowing the robber to move right
+    def move_left(self):
+        self.center_x += self.change_x
+        if 0 >= (self.center_x - self.ROBBER_SPEED):
+            self.CURRENT_DIRECTION = Direction.RIGHT  # Switch to other direction if it hits the left side boundary
+            self.change_x *= -1
+        # Do nothing to change if in the correct bounds
+
+    # Method that animates a robber character
+    def animate(self):
         if self.CURRENT_DIRECTION == Direction.LEFT:
             self.move_left()
         elif self.CURRENT_DIRECTION == Direction.RIGHT:
             self.move_right()
 
 
+#This class represents the arcade window
 class SimpleGame(arcade.Window):
 
+    #Intilizes method calls the super constructor for aracde.Window
     def __init__(self, width, height, title):
         # Calling the parent's init method
         super().__init__(width, height, title)
         self.robber_sprites_list = None
+
 
     def start_new_game(self):
         # Setting the background color
         arcade.set_background_color(arcade.color.DONKEY_BROWN)
         self.robber_sprites_list = arcade.SpriteList()
         # Creating instance of robber class
-        for i in range(3):
+        for i in range(NUMBER_ROBBERS):
             # create Robber instance
             robber_sprite = Robber("./sprites/robber.png", SPRITE_SCALING)
 
@@ -80,7 +85,6 @@ class SimpleGame(arcade.Window):
 
             # Add the robber sprite to the list of sprites
             self.robber_sprites_list.append(robber_sprite)
-            self.robber_sprites_list.update_animation(2)
 
     def on_draw(self):
         # Command that must be called before drawing can occur
@@ -88,6 +92,7 @@ class SimpleGame(arcade.Window):
 
         # Draw all the robbers in the list
         self.robber_sprites_list.draw()
+        self.animate(1)
 
     def on_key_press(self, key, modifiers):
         pass
@@ -95,10 +100,12 @@ class SimpleGame(arcade.Window):
 
     def animate(self, delta_time):
         # Call update on all sprites (The sprites don't do much in this #
-        print("Entererd")
         self.robber_sprites_list.update()
+        for robber in self.robber_sprites_list:
+            robber.animate();
 
 
+#Class that represents the gui that presents the options of either playing the game or not
 class App(QWidget):
 
     def __init__(self):
@@ -124,6 +131,7 @@ class App(QWidget):
             self.close()
 
 
+#What starts the game
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
