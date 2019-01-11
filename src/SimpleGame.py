@@ -28,6 +28,7 @@ class Direction(Enum):
     RIGHT = 1
 
 
+
 # Class that represents a robber and his abilities
 class Robber(arcade.Sprite):
     ROBBER_SPEED = 3
