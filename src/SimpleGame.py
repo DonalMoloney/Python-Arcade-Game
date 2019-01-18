@@ -176,12 +176,13 @@ class Menu(QMainWindow):
                         " Right Arrow: Move Sheriff Right\n Down Arrow: Move Sheriff Left\n")
         button = QPushButton('Ok', self);
         button.resize(50,32)
-        button.move(400,380)
+        button.move(350,380)
         button.clicked.connect(self.clickMethod)
         # Setting the image of controls
-        pixmap = QPixmap('./info/movement.jpg')
+        pixmap = QPixmap('./info/movement.png')
+        pixmap = pixmap.scaledToWidth(400)
         label1.setPixmap(pixmap)
-        self.resize(pixmap.width(), pixmap.height())
+        self.setFixedSize(450,580)
         lay.addWidget(label1)
         lay.addWidget(label2)
         self.show()
