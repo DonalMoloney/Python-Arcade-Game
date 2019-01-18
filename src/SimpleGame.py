@@ -28,7 +28,6 @@ class Direction(Enum):
     RIGHT = 1
 
 
-
 # Class that represents a robber and his abilities
 class Robber(arcade.Sprite):
     ROBBER_SPEED = 3
@@ -63,27 +62,26 @@ class Robber(arcade.Sprite):
 
 
 class Sheriff(arcade.Sprite):
-    ROBBER_SPEED = 6
+    SHERIFF_SPEED = 6
 
     def __init__(self, filename, sprite_scaling):
         super().__init__(filename, sprite_scaling)
 
     # Method allowing the robber to move rigt
     def move_right(self):
-        print("Right")
-        pass
+        self.center_x += self.SHERIFF_SPEED
 
-    # Method allowing the robber to move left
+    # Method allowing the robber to move right
     def move_left(self):
-        print("left")
+        self.center_x -= self.SHERIFF_SPEED
 
     # Method allowing the robber to move up
     def move_up(self):
-        print("up")
+        self.center_y += self.SHERIFF_SPEED
 
     # Method allowing the robber to move right
     def move_down(self):
-        print("down")
+        self.center_y -= self.SHERIFF_SPEED
 
 
 # This class represents the arcade window
@@ -175,14 +173,14 @@ class Menu(QMainWindow):
         label2 = QLabel("Your Controls: \n Up Arrow: Move Sheriff upward \n Left Arrow: Move Sheriff downward \n"
                         " Right Arrow: Move Sheriff Right\n Down Arrow: Move Sheriff Left\n")
         button = QPushButton('Ok', self);
-        button.resize(50,32)
-        button.move(350,380)
+        button.resize(50, 32)
+        button.move(350, 380)
         button.clicked.connect(self.clickMethod)
         # Setting the image of controls
         pixmap = QPixmap('./info/movement.png')
         pixmap = pixmap.scaledToWidth(400)
         label1.setPixmap(pixmap)
-        self.setFixedSize(450,580)
+        self.setFixedSize(450, 580)
         lay.addWidget(label1)
         lay.addWidget(label2)
         self.show()
